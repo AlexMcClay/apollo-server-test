@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postgraphile": "npx postgraphile -c 'postgresql://postgres:11331010369@localhost:5432/prisma-graphql' --watch --enhance-graphiql --dynamic-json --cors"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.3",
     "@apollo/server": "^4.3.0",
     "@as-integrations/next": "^1.2.0",
     "@next/font": "13.1.1",
