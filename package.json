@@ -7,12 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postgraphile": "npx postgraphile -c 'postgresql://postgres:11331010369@localhost:5432/prisma-graphql' --watch --enhance-graphiql --dynamic-json --cors"
+    "postgraphile": "npx postgraphile -c 'postgresql://postgres:11331010369@localhost:5432/prisma-graphql' --watch --enhance-graphiql --dynamic-json --cors",
+    "express": "node ./express/index.js"
   },
   "dependencies": {
     "@apollo/client": "^3.7.3",
     "@apollo/server": "^4.3.0",
     "@as-integrations/next": "^1.2.0",
+    "@graphile-contrib/pg-simplify-inflector": "^6.1.0",
     "@next/font": "13.1.1",
     "@prisma/client": "^4.8.0",
     "@types/node": "18.11.17",
@@ -20,6 +22,7 @@
     "@types/react-dom": "18.0.10",
     "eslint": "8.30.0",
     "eslint-config-next": "13.1.1",
+    "express": "^4.18.2",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
     "next": "13.1.1",
