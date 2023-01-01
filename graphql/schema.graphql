@@ -1,0 +1,911 @@
+"""The root query type which gives access points into the data universe."""
+type Query implements Node {
+  """
+  Exposes the root query type nested one level down. This is helpful for Relay 1
+  which can only query top level fields if they are in a particular form.
+  """
+  query: Query!
+
+  """
+  The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`.
+  """
+  nodeId: ID!
+
+  """Fetches an object given its globally unique `ID`."""
+  node(
+    """The globally unique `ID`."""
+    nodeId: ID!
+  ): Node
+
+  """Reads and enables pagination through a set of `Link`."""
+  links(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Link`."""
+    orderBy: [LinksOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: LinkCondition
+  ): LinksConnection
+
+  """Reads and enables pagination through a set of `User`."""
+  users(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `User`."""
+    orderBy: [UsersOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: UserCondition
+  ): UsersConnection
+
+  """Reads and enables pagination through a set of `_LinkToUser`."""
+  _linkToUsers(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `_LinkToUser`."""
+    orderBy: [_LinkToUsersOrderBy!] = [NATURAL]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: _LinkToUserCondition
+  ): _LinkToUsersConnection
+  link(id: String!): Link
+  user(id: String!): User
+
+  """Reads a single `Link` using its globally unique `ID`."""
+  linkByNodeId(
+    """The globally unique `ID` to be used in selecting a single `Link`."""
+    nodeId: ID!
+  ): Link
+
+  """Reads a single `User` using its globally unique `ID`."""
+  userByNodeId(
+    """The globally unique `ID` to be used in selecting a single `User`."""
+    nodeId: ID!
+  ): User
+}
+
+"""An object with a globally unique `ID`."""
+interface Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+}
+
+"""A connection to a list of `Link` values."""
+type LinksConnection {
+  """A list of `Link` objects."""
+  nodes: [Link!]!
+
+  """
+  A list of edges which contains the `Link` and cursor to aid in pagination.
+  """
+  edges: [LinksEdge!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Link` you could get from the connection."""
+  totalCount: Int!
+}
+
+type Link implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: String!
+  createdAt: Datetime!
+  updatedAt: Datetime!
+  title: String!
+  description: String!
+  url: String!
+  imageUrl: String!
+  category: String!
+
+  """Reads and enables pagination through a set of `_LinkToUser`."""
+  _linkToUsersByA(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `_LinkToUser`."""
+    orderBy: [_LinkToUsersOrderBy!] = [NATURAL]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: _LinkToUserCondition
+  ): _LinkToUsersConnection!
+}
+
+"""
+A point in time as described by the [ISO
+8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone.
+"""
+scalar Datetime
+
+"""A connection to a list of `_LinkToUser` values."""
+type _LinkToUsersConnection {
+  """A list of `_LinkToUser` objects."""
+  nodes: [_LinkToUser!]!
+
+  """
+  A list of edges which contains the `_LinkToUser` and cursor to aid in pagination.
+  """
+  edges: [_LinkToUsersEdge!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `_LinkToUser` you could get from the connection."""
+  totalCount: Int!
+}
+
+type _LinkToUser {
+  a: String!
+  b: String!
+
+  """Reads a single `Link` that is related to this `_LinkToUser`."""
+  linkByA: Link
+
+  """Reads a single `User` that is related to this `_LinkToUser`."""
+  userByB: User
+}
+
+type User implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: String!
+  createdAt: Datetime!
+  updatedAt: Datetime!
+  email: String!
+  image: String
+  role: Role!
+
+  """Reads and enables pagination through a set of `_LinkToUser`."""
+  _linkToUsersByB(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `_LinkToUser`."""
+    orderBy: [_LinkToUsersOrderBy!] = [NATURAL]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: _LinkToUserCondition
+  ): _LinkToUsersConnection!
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+"""A location in a connection that can be used for resuming pagination."""
+scalar Cursor
+
+"""Methods to use when ordering `_LinkToUser`."""
+enum _LinkToUsersOrderBy {
+  NATURAL
+  A_ASC
+  A_DESC
+  B_ASC
+  B_DESC
+}
+
+"""
+A condition to be used against `_LinkToUser` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input _LinkToUserCondition {
+  """Checks for equality with the object’s `a` field."""
+  a: String
+
+  """Checks for equality with the object’s `b` field."""
+  b: String
+}
+
+"""A `_LinkToUser` edge in the connection."""
+type _LinkToUsersEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `_LinkToUser` at the end of the edge."""
+  node: _LinkToUser!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: Cursor
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: Cursor
+}
+
+"""A `Link` edge in the connection."""
+type LinksEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Link` at the end of the edge."""
+  node: Link!
+}
+
+"""Methods to use when ordering `Link`."""
+enum LinksOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+  TITLE_ASC
+  TITLE_DESC
+  DESCRIPTION_ASC
+  DESCRIPTION_DESC
+  URL_ASC
+  URL_DESC
+  IMAGE_URL_ASC
+  IMAGE_URL_DESC
+  CATEGORY_ASC
+  CATEGORY_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"""
+A condition to be used against `Link` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input LinkCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: String
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+
+  """Checks for equality with the object’s `title` field."""
+  title: String
+
+  """Checks for equality with the object’s `description` field."""
+  description: String
+
+  """Checks for equality with the object’s `url` field."""
+  url: String
+
+  """Checks for equality with the object’s `imageUrl` field."""
+  imageUrl: String
+
+  """Checks for equality with the object’s `category` field."""
+  category: String
+}
+
+"""A connection to a list of `User` values."""
+type UsersConnection {
+  """A list of `User` objects."""
+  nodes: [User!]!
+
+  """
+  A list of edges which contains the `User` and cursor to aid in pagination.
+  """
+  edges: [UsersEdge!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `User` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `User` edge in the connection."""
+type UsersEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `User` at the end of the edge."""
+  node: User!
+}
+
+"""Methods to use when ordering `User`."""
+enum UsersOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+  EMAIL_ASC
+  EMAIL_DESC
+  IMAGE_ASC
+  IMAGE_DESC
+  ROLE_ASC
+  ROLE_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"""
+A condition to be used against `User` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input UserCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: String
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+
+  """Checks for equality with the object’s `email` field."""
+  email: String
+
+  """Checks for equality with the object’s `image` field."""
+  image: String
+
+  """Checks for equality with the object’s `role` field."""
+  role: Role
+}
+
+"""
+The root mutation type which contains root level fields which mutate data.
+"""
+type Mutation {
+  """Creates a single `Link`."""
+  createLink(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateLinkInput!
+  ): CreateLinkPayload
+
+  """Creates a single `User`."""
+  createUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateUserInput!
+  ): CreateUserPayload
+
+  """Creates a single `_LinkToUser`."""
+  createLinkToUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateLinkToUserInput!
+  ): CreateLinkToUserPayload
+
+  """Updates a single `Link` using its globally unique id and a patch."""
+  updateLinkByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateLinkByNodeIdInput!
+  ): UpdateLinkPayload
+
+  """Updates a single `Link` using a unique key and a patch."""
+  updateLink(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateLinkInput!
+  ): UpdateLinkPayload
+
+  """Updates a single `User` using its globally unique id and a patch."""
+  updateUserByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateUserByNodeIdInput!
+  ): UpdateUserPayload
+
+  """Updates a single `User` using a unique key and a patch."""
+  updateUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateUserInput!
+  ): UpdateUserPayload
+
+  """Deletes a single `Link` using its globally unique id."""
+  deleteLinkByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteLinkByNodeIdInput!
+  ): DeleteLinkPayload
+
+  """Deletes a single `Link` using a unique key."""
+  deleteLink(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteLinkInput!
+  ): DeleteLinkPayload
+
+  """Deletes a single `User` using its globally unique id."""
+  deleteUserByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteUserByNodeIdInput!
+  ): DeleteUserPayload
+
+  """Deletes a single `User` using a unique key."""
+  deleteUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteUserInput!
+  ): DeleteUserPayload
+}
+
+"""The output of our create `Link` mutation."""
+type CreateLinkPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Link` that was created by this mutation."""
+  link: Link
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Link`. May be used by Relay 1."""
+  linkEdge(
+    """The method to use when ordering `Link`."""
+    orderBy: [LinksOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LinksEdge
+}
+
+"""All input for the create `Link` mutation."""
+input CreateLinkInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Link` to be created by this mutation."""
+  link: LinkInput!
+}
+
+"""An input for mutations affecting `Link`"""
+input LinkInput {
+  id: String!
+  createdAt: Datetime
+  updatedAt: Datetime!
+  title: String!
+  description: String!
+  url: String!
+  imageUrl: String!
+  category: String!
+}
+
+"""The output of our create `User` mutation."""
+type CreateUserPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `User` that was created by this mutation."""
+  user: User
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `User`. May be used by Relay 1."""
+  userEdge(
+    """The method to use when ordering `User`."""
+    orderBy: [UsersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): UsersEdge
+}
+
+"""All input for the create `User` mutation."""
+input CreateUserInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `User` to be created by this mutation."""
+  user: UserInput!
+}
+
+"""An input for mutations affecting `User`"""
+input UserInput {
+  id: String!
+  createdAt: Datetime
+  updatedAt: Datetime!
+  email: String!
+  image: String
+  role: Role
+}
+
+"""The output of our create `_LinkToUser` mutation."""
+type CreateLinkToUserPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `_LinkToUser` that was created by this mutation."""
+  _linkToUser: _LinkToUser
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `Link` that is related to this `_LinkToUser`."""
+  linkByA: Link
+
+  """Reads a single `User` that is related to this `_LinkToUser`."""
+  userByB: User
+
+  """An edge for our `_LinkToUser`. May be used by Relay 1."""
+  _linkToUserEdge(
+    """The method to use when ordering `_LinkToUser`."""
+    orderBy: [_LinkToUsersOrderBy!] = [NATURAL]
+  ): _LinkToUsersEdge
+}
+
+"""All input for the create `_LinkToUser` mutation."""
+input CreateLinkToUserInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `_LinkToUser` to be created by this mutation."""
+  _linkToUser: _LinkToUserInput!
+}
+
+"""An input for mutations affecting `_LinkToUser`"""
+input _LinkToUserInput {
+  a: String!
+  b: String!
+}
+
+"""The output of our update `Link` mutation."""
+type UpdateLinkPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Link` that was updated by this mutation."""
+  link: Link
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Link`. May be used by Relay 1."""
+  linkEdge(
+    """The method to use when ordering `Link`."""
+    orderBy: [LinksOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LinksEdge
+}
+
+"""All input for the `updateLinkByNodeId` mutation."""
+input UpdateLinkByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Link` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Link` being updated.
+  """
+  patch: LinkPatch!
+}
+
+"""Represents an update to a `Link`. Fields that are set will be updated."""
+input LinkPatch {
+  id: String
+  createdAt: Datetime
+  updatedAt: Datetime
+  title: String
+  description: String
+  url: String
+  imageUrl: String
+  category: String
+}
+
+"""All input for the `updateLink` mutation."""
+input UpdateLinkInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `Link` being updated.
+  """
+  patch: LinkPatch!
+  id: String!
+}
+
+"""The output of our update `User` mutation."""
+type UpdateUserPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `User` that was updated by this mutation."""
+  user: User
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `User`. May be used by Relay 1."""
+  userEdge(
+    """The method to use when ordering `User`."""
+    orderBy: [UsersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): UsersEdge
+}
+
+"""All input for the `updateUserByNodeId` mutation."""
+input UpdateUserByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `User` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `User` being updated.
+  """
+  patch: UserPatch!
+}
+
+"""Represents an update to a `User`. Fields that are set will be updated."""
+input UserPatch {
+  id: String
+  createdAt: Datetime
+  updatedAt: Datetime
+  email: String
+  image: String
+  role: Role
+}
+
+"""All input for the `updateUser` mutation."""
+input UpdateUserInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `User` being updated.
+  """
+  patch: UserPatch!
+  id: String!
+}
+
+"""The output of our delete `Link` mutation."""
+type DeleteLinkPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Link` that was deleted by this mutation."""
+  link: Link
+  deletedLinkNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Link`. May be used by Relay 1."""
+  linkEdge(
+    """The method to use when ordering `Link`."""
+    orderBy: [LinksOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LinksEdge
+}
+
+"""All input for the `deleteLinkByNodeId` mutation."""
+input DeleteLinkByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Link` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteLink` mutation."""
+input DeleteLinkInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: String!
+}
+
+"""The output of our delete `User` mutation."""
+type DeleteUserPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `User` that was deleted by this mutation."""
+  user: User
+  deletedUserNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `User`. May be used by Relay 1."""
+  userEdge(
+    """The method to use when ordering `User`."""
+    orderBy: [UsersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): UsersEdge
+}
+
+"""All input for the `deleteUserByNodeId` mutation."""
+input DeleteUserByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `User` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteUser` mutation."""
+input DeleteUserInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: String!
+}
