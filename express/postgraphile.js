@@ -37,4 +37,6 @@ app.use(
   )
 );
 
-app.listen(5000);
+app.listen(5000, () => {
+  console.log("App is Listening on port 5000");
+});

@@ -3,7 +3,6 @@
     "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext", "es2020"],
     "allowJs": true,
-    "outDir": "dist",
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -16,6 +15,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+
     "plugins": [
       {
         "name": "next"

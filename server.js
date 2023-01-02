@@ -16,7 +16,8 @@ import { json } from "body-parser";
 import WebSocket, { WebSocketServer } from "ws";
 
 // schema
-import { resolvers, typeDefs } from "./graphql";
+import { typeDefs } from "./graphql/schema";
+import { resolvers } from "./graphql/resolvers";
 
 (async function () {
   // server code

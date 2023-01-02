@@ -1,15 +1,16 @@
 {
   "name": "apollo-server-test",
   "version": "0.1.0",
-  "type": "module",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "compile": "tsc ./server.ts",
     "postgraphile": "node ./express/postgraphile.js",
-    "apollo": "node ./server.js"
+    "apollo": "nodemon server.js",
+    "apolloNodemon": "nodemon server.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.7.3",
