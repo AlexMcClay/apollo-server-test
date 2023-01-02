@@ -1,13 +1,19 @@
 const express = require("express");
-const { postgraphile } = require("postgraphile");
+const { postgraphile, makePluginHook } = require("postgraphile");
+const { default: PgPubsub } = require("@graphile/pg-pubsub");
+
 const app = express();
 
 app.get("/", function (req, res) {
   res.send("Hello World");
 });
 
+const pluginHook = makePluginHook([PgPubsub]);
+
 const postgraphileOptions = {
+  pluginHook,
   subscriptions: true,
+  simpleSubscriptions: true,
   watchPg: true,
   dynamicJson: true,
   setofFunctionsContainNulls: false,
@@ -24,6 +30,14 @@ const postgraphileOptions = {
   },
   enableQueryBatching: true,
   legacyRelations: "omit",
+  websocketMiddlewares: [
+    // Add whatever middlewares you need here, note that they should only
+    // manipulate properties on req/res, they must not sent response data. e.g.:
+    //
+    //   require('express-session')(),
+    //   require('passport').initialize(),
+    //   require('passport').session(),
+  ],
   pgSettings(req) {
     /* TODO */
   },

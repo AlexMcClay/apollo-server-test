@@ -103,8 +103,38 @@ type Query implements Node {
     """
     condition: _LinkToUserCondition
   ): _LinkToUsersConnection
+
+  """Reads and enables pagination through a set of `Foo`."""
+  foos(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Foo`."""
+    orderBy: [FoosOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: FooCondition
+  ): FoosConnection
   link(id: String!): Link
   user(id: String!): User
+  foo(id: Int!): Foo
 
   """Reads a single `Link` using its globally unique `ID`."""
   linkByNodeId(
@@ -117,6 +147,12 @@ type Query implements Node {
     """The globally unique `ID` to be used in selecting a single `User`."""
     nodeId: ID!
   ): User
+
+  """Reads a single `Foo` using its globally unique `ID`."""
+  fooByNodeId(
+    """The globally unique `ID` to be used in selecting a single `Foo`."""
+    nodeId: ID!
+  ): Foo
 }
 
 """An object with a globally unique `ID`."""
@@ -446,6 +482,63 @@ input UserCondition {
   role: Role
 }
 
+"""A connection to a list of `Foo` values."""
+type FoosConnection {
+  """A list of `Foo` objects."""
+  nodes: [Foo!]!
+
+  """
+  A list of edges which contains the `Foo` and cursor to aid in pagination.
+  """
+  edges: [FoosEdge!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Foo` you could get from the connection."""
+  totalCount: Int!
+}
+
+type Foo implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: Int!
+  title: String!
+}
+
+"""A `Foo` edge in the connection."""
+type FoosEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Foo` at the end of the edge."""
+  node: Foo!
+}
+
+"""Methods to use when ordering `Foo`."""
+enum FoosOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  TITLE_ASC
+  TITLE_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"""
+A condition to be used against `Foo` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input FooCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: Int
+
+  """Checks for equality with the object’s `title` field."""
+  title: String
+}
+
 """
 The root mutation type which contains root level fields which mutate data.
 """
@@ -473,6 +566,14 @@ type Mutation {
     """
     input: CreateLinkToUserInput!
   ): CreateLinkToUserPayload
+
+  """Creates a single `Foo`."""
+  createFoo(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateFooInput!
+  ): CreateFooPayload
 
   """Updates a single `Link` using its globally unique id and a patch."""
   updateLinkByNodeId(
@@ -506,6 +607,22 @@ type Mutation {
     input: UpdateUserInput!
   ): UpdateUserPayload
 
+  """Updates a single `Foo` using its globally unique id and a patch."""
+  updateFooByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateFooByNodeIdInput!
+  ): UpdateFooPayload
+
+  """Updates a single `Foo` using a unique key and a patch."""
+  updateFoo(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateFooInput!
+  ): UpdateFooPayload
+
   """Deletes a single `Link` using its globally unique id."""
   deleteLinkByNodeId(
     """
@@ -537,6 +654,22 @@ type Mutation {
     """
     input: DeleteUserInput!
   ): DeleteUserPayload
+
+  """Deletes a single `Foo` using its globally unique id."""
+  deleteFooByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteFooByNodeIdInput!
+  ): DeleteFooPayload
+
+  """Deletes a single `Foo` using a unique key."""
+  deleteFoo(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteFooInput!
+  ): DeleteFooPayload
 }
 
 """The output of our create `Link` mutation."""
@@ -678,6 +811,47 @@ input _LinkToUserInput {
   b: String!
 }
 
+"""The output of our create `Foo` mutation."""
+type CreateFooPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Foo` that was created by this mutation."""
+  foo: Foo
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Foo`. May be used by Relay 1."""
+  fooEdge(
+    """The method to use when ordering `Foo`."""
+    orderBy: [FoosOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FoosEdge
+}
+
+"""All input for the create `Foo` mutation."""
+input CreateFooInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Foo` to be created by this mutation."""
+  foo: FooInput!
+}
+
+"""An input for mutations affecting `Foo`"""
+input FooInput {
+  id: Int
+  title: String!
+}
+
 """The output of our update `Link` mutation."""
 type UpdateLinkPayload {
   """
@@ -814,6 +988,69 @@ input UpdateUserInput {
   id: String!
 }
 
+"""The output of our update `Foo` mutation."""
+type UpdateFooPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Foo` that was updated by this mutation."""
+  foo: Foo
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Foo`. May be used by Relay 1."""
+  fooEdge(
+    """The method to use when ordering `Foo`."""
+    orderBy: [FoosOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FoosEdge
+}
+
+"""All input for the `updateFooByNodeId` mutation."""
+input UpdateFooByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Foo` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Foo` being updated.
+  """
+  patch: FooPatch!
+}
+
+"""Represents an update to a `Foo`. Fields that are set will be updated."""
+input FooPatch {
+  id: Int
+  title: String
+}
+
+"""All input for the `updateFoo` mutation."""
+input UpdateFooInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `Foo` being updated.
+  """
+  patch: FooPatch!
+  id: Int!
+}
+
 """The output of our delete `Link` mutation."""
 type DeleteLinkPayload {
   """
@@ -908,4 +1145,68 @@ input DeleteUserInput {
   """
   clientMutationId: String
   id: String!
+}
+
+"""The output of our delete `Foo` mutation."""
+type DeleteFooPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Foo` that was deleted by this mutation."""
+  foo: Foo
+  deletedFooNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Foo`. May be used by Relay 1."""
+  fooEdge(
+    """The method to use when ordering `Foo`."""
+    orderBy: [FoosOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FoosEdge
+}
+
+"""All input for the `deleteFooByNodeId` mutation."""
+input DeleteFooByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Foo` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteFoo` mutation."""
+input DeleteFooInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: Int!
+}
+
+"""
+The root subscription type: contains realtime events you can subscribe to with the `subscription` operation.
+"""
+type Subscription {
+  listen(topic: String!): ListenPayload!
+}
+
+type ListenPayload {
+  """
+  Our root query field type. Allows us to run any query from our subscription payload.
+  """
+  query: Query
+  relatedNode: Node
+  relatedNodeId: ID
 }
