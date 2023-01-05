@@ -18,9 +18,15 @@ const postgraphileOptions = {
   dynamicJson: true,
   setofFunctionsContainNulls: false,
   ignoreRBAC: false,
+  live: true,
+  ownerConnectionString:
+    "postgresql://postgres:11331010369@localhost:5432/test",
   showErrorStack: "json",
   extendedErrors: ["hint", "detail", "errcode"],
-  appendPlugins: [require("@graphile-contrib/pg-simplify-inflector")],
+  appendPlugins: [
+    require("@graphile-contrib/pg-simplify-inflector"),
+    require("@graphile/subscriptions-lds").default,
+  ],
   exportGqlSchemaPath: "./graphql/schema.graphql",
   graphiql: true,
   enhanceGraphiql: true,
@@ -45,7 +51,7 @@ const postgraphileOptions = {
 
 app.use(
   postgraphile(
-    "postgresql://postgres:11331010369@localhost:5432/prisma-graphql",
+    "postgresql://postgres:11331010369@localhost:5432/test",
     "public",
     postgraphileOptions
   )

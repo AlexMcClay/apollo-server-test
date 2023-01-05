@@ -16,6 +16,7 @@
     "@apollo/client": "^3.7.3",
     "@graphile-contrib/pg-simplify-inflector": "^6.1.0",
     "@graphile/pg-pubsub": "^4.12.3",
+    "@graphile/subscriptions-lds": "^4.12.3",
     "@graphql-tools/schema": "^9.0.12",
     "@next/font": "13.1.1",
     "@prisma/client": "^4.8.0",
